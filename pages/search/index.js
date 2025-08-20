@@ -3,6 +3,8 @@ import { siteConfig } from '@/lib/config'
 import { getGlobalData } from '@/lib/db/getSiteData'
 import { DynamicLayout } from '@/themes/theme'
 import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react' // If URL has hash (#), show all posts 3-11-2025
+
 
 /**
  * 搜索路由
@@ -11,9 +13,19 @@ import { useRouter } from 'next/router'
  */
 const Search = props => {
   const { posts } = props
-
   const router = useRouter()
   const keyword = router?.query?.s
+  const [showAllPosts, setShowAllPosts] = useState(false)
+
+  // Check for hash in URL on client side // If URL has hash (#), show all posts 3-11-2025
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // If URL has hash (#), show all posts
+      if (window.location.hash === 'home') {
+        setShowAllPosts(true)
+      }
+    }
+  }, []) // If URL has hash (#), show all posts 3-11-2025
 
   let filteredPosts
   // 静态过滤
@@ -25,8 +37,11 @@ const Search = props => {
         post.title + post.summary + tagContent + categoryContent
       return searchContent.toLowerCase().includes(keyword.toLowerCase())
     })
+  } else if (showAllPosts) {
+    // If URL has hash (#), show all posts 3-11-2025
+    filteredPosts = posts
   } else {
-    filteredPosts = []
+    filteredPosts = [] 
   }
 
   props = { ...props, posts: filteredPosts }

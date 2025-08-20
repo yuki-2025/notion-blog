@@ -31,6 +31,7 @@ const ExternalPlugin = props => {
     NOTION_CONFIG
   )
   const ANALYTICS_VERCEL = siteConfig('ANALYTICS_VERCEL', null, NOTION_CONFIG)
+  const ANALYTICS_VERCEL_SPEED_INSIGHTS = siteConfig('ANALYTICS_VERCEL_SPEED_INSIGHTS', null, NOTION_CONFIG) // 3-11-2025
   const ANALYTICS_BUSUANZI_ENABLE = siteConfig(
     'ANALYTICS_BUSUANZI_ENABLE',
     null,
@@ -196,6 +197,7 @@ const ExternalPlugin = props => {
       {ANALYTICS_ACKEE_TRACKER && <Ackee />}
       {ANALYTICS_GOOGLE_ID && <Gtag />}
       {ANALYTICS_VERCEL && <Analytics />}
+      {ANALYTICS_VERCEL_SPEED_INSIGHTS && <SpeedInsights />} {/* 3-11-2025 全局样式嵌入 */}
       {ANALYTICS_BUSUANZI_ENABLE && <Busuanzi />}
       {FACEBOOK_APP_ID && FACEBOOK_PAGE_ID && <Messenger />}
       {FIREWORKS && <Fireworks />}
@@ -475,6 +477,14 @@ const Analytics = dynamic(
   () =>
     import('@vercel/analytics/react').then(m => {
       return m.Analytics
+    }),
+  { ssr: false }
+)
+// 3-11-2025 Vercel Speed Insights性能分析
+const SpeedInsights = dynamic(
+  () =>
+    import('@vercel/speed-insights/next').then(async m => {
+      return m.SpeedInsights
     }),
   { ssr: false }
 )
